@@ -1,0 +1,88 @@
+.location-permission-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.location-permission-card {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 40px var(--shadow);
+}
+
+.location-icon {
+  font-size: 60px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.location-permission-card h2 {
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.location-permission-card p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.location-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+[data-theme='dark'] .location-error {
+  background: #3d1f1f;
+  color: #ef5350;
+}
+
+.location-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-allow,
+.btn-deny {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-allow {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-allow:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-deny {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+}
+
+.btn-deny:hover {
+  background: var(--bg-tertiary);
+}
+
