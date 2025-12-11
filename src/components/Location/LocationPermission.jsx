@@ -3,14 +3,9 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useLocation } from '../../context/LocationContext';
 import './Location.css';
 
-const LocationPermission = ({ children }) => {
+const LocationPermission = ({ children, onAllow, onSkip }) => {
   const { location, locationError, requestLocation } = useLocation();
-  const [showPrompt, setShowPrompt] = useState(false);
-
-  useEffect(() => {
-    setShowPrompt(true);
-    requestLocation();
-  }, [requestLocation]);
+  const [showPrompt, setShowPrompt] = useState(true);
 
   useEffect(() => {
     if (location) {
@@ -19,12 +14,20 @@ const LocationPermission = ({ children }) => {
   }, [location]);
 
   const handleAllow = () => {
-    requestLocation();
-    setShowPrompt(false);
+    if (onAllow) {
+      onAllow();
+    } else {
+      requestLocation();
+      setShowPrompt(false);
+    }
   };
 
   const handleSkip = () => {
-    setShowPrompt(false);
+    if (onSkip) {
+      onSkip();
+    } else {
+      setShowPrompt(false);
+    }
   };
 
   if (showPrompt && !location) {
@@ -51,7 +54,7 @@ const LocationPermission = ({ children }) => {
     );
   }
 
-  return children;
+  return children || null;
 };
 
 export default LocationPermission;

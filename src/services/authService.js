@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import { storage } from '../utils/storage';
 
 export const authService = {
@@ -8,6 +9,25 @@ export const authService = {
       email,
       name: email.split('@')[0],
       id: Date.now()
+    };
+
+    storage.setItem('user', user);
+    return user;
+  },
+
+  googleLogin: async (credentialResponse) => {
+    if (!credentialResponse?.credential) {
+      throw new Error('Missing Google credential.');
+    }
+
+    const decoded = jwtDecode(credentialResponse.credential);
+
+    const user = {
+      email: decoded.email,
+      name: decoded.name,
+      picture: decoded.picture,
+      id: decoded.sub,
+      provider: 'google'
     };
 
     storage.setItem('user', user);

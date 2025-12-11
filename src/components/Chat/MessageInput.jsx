@@ -1,9 +1,16 @@
-import { useState } from 'react';
-import { FaMicrophone, FaPaperPlane } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { FaMicrophone, FaPaperPlane, FaStop } from 'react-icons/fa';
+import { useVoiceInput } from '../../hooks/useVoiceInput';
 import './Chat.css';
 
-const MessageInput = ({ onSendMessage, isCentered, disabled }) => {
+const MessageInput = ({ onSendMessage, isCentered, disabled, inputRef }) => {
   const [input, setInput] = useState('');
+
+  const handleTranscript = (transcript) => {
+    setInput(transcript);
+  };
+
+  const { isListening, error, startListening, stopListening, isSupported } = useVoiceInput(handleTranscript);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -12,6 +19,20 @@ const MessageInput = ({ onSendMessage, isCentered, disabled }) => {
     onSendMessage(input.trim());
     setInput('');
   };
+
+  const handleVoiceClick = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      console.warn('Voice input error:', error);
+    }
+  }, [error]);
 
   return (
     <div className={`message-input-container ${isCentered ? 'centered' : ''}`}>
@@ -22,18 +43,35 @@ const MessageInput = ({ onSendMessage, isCentered, disabled }) => {
           placeholder="Ask about crops, weather, fertilizers..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          disabled={disabled}
+          disabled={disabled || isListening}
+          ref={inputRef}
         />
-        <button className="voice-button" type="button" title="Voice input coming soon" disabled={disabled}>
-          <FaMicrophone />
-        </button>
-        <button className="send-button" type="submit" disabled={disabled}>
+        {isSupported && (
+          <button
+            className={`voice-button ${isListening ? 'listening' : ''}`}
+            type="button"
+            title={isListening ? 'Stop listening' : 'Start voice input'}
+            onClick={handleVoiceClick}
+            disabled={disabled}
+          >
+            {isListening ? <FaStop /> : <FaMicrophone />}
+          </button>
+        )}
+        <button className="send-button" type="submit" disabled={disabled || isListening || !input.trim()}>
           <FaPaperPlane />
         </button>
       </form>
+      {isListening && (
+        <div className="voice-indicator">
+          <span className="voice-pulse"></span>
+          Listening...
+        </div>
+      )}
+      {error && !isListening && (
+        <div className="voice-error">Voice input unavailable. Please type your message.</div>
+      )}
     </div>
   );
 };
 
 export default MessageInput;
-
