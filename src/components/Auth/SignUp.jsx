@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaTractor, FaLock, FaUser, FaGoogle } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
+import { authService } from '../../services/authService';
+
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -163,4 +165,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-

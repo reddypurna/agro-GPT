@@ -13,6 +13,8 @@ import WeatherWidget from './WeatherWidget';
 import { storage } from '../../utils/storage';
 import SettingsModal from './SettingsModal';
 import { FaCog } from 'react-icons/fa';
+import { queryAgent, saveChat } from '../../utils/agentApi';
+
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -114,7 +116,7 @@ const ChatBot = () => {
     inputRef.current?.focus();
   }, []);
 
-  const handleSendMessage = (text) => {
+  const handleSendMessage = async(text) => {
     const userMessage = {
       id: Date.now(),
       text,
@@ -127,12 +129,37 @@ const ChatBot = () => {
 
     // Simulate typing delay for more natural feel
     const typingDelay = Math.random() * 300 + 500;
-    setTimeout(() => {
-      const botResponse = generateBotResponse(text);
-      setMessages((prev) => [...prev, botResponse]);
-    }, typingDelay);
+    try {
+      const data = await queryAgent(text);
+    
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: data.answer || 'No response from AgroGPT',
+          sender: 'bot',
+          timestamp: new Date()
+        }
+      ]);
+    
+      if (user?.id) {
+        saveChat(user.id, text, data.answer);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 2,
+          text: '❌ Unable to reach AgroGPT backend.',
+          sender: 'bot',
+          timestamp: new Date()
+        }
+      ]);
+    }
+    
   };
-
+//////////////////////////////
   const handleNewChat = useCallback(() => {
     const timestamp = new Date();
     const newId = timestamp.getTime();

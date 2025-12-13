@@ -4,6 +4,8 @@ import { FaTractor, FaLock, FaUser } from 'react-icons/fa';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
+import { authService } from '../../services/authService';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -128,4 +130,3 @@ const Login = () => {
 };
 
 export default Login;
-
